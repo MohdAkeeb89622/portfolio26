@@ -9,6 +9,7 @@ import Project from './components/projects/Project';
 import Contact from './components/contact/Contact';
 import Footer from './components/footer/Footer';
 
+import AnimatedProjects from './components/procaps/AnimatedProjects';
 const App = () => {
   return (
     <>
@@ -16,7 +17,7 @@ const App = () => {
         <Nav />
         <About/>
         <Experience/>
-        <Services/>
+        <AnimatedProjects/>
         <Project/>
         <Portfolio/>
         <Contact/>

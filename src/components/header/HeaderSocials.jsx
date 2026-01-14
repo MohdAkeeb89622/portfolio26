@@ -6,8 +6,8 @@ import {ImInstagram} from 'react-icons/im'
 const HeaderSocials = () => {
   return (
     <div className="header__socials">
-        <a href="https://linkedin.com/in/md-akeeb-khan-766885176" target="_blank"><ImLinkedin/></a>
-        <a href="https://github.com/MoAkeebKhan/" target="_blank"><ImGithub/></a>
+        <a href="https://www.linkedin.com/in/mohd-akeeb-khan-766885176/" target="_blank"><ImLinkedin/></a>
+        <a href="https://github.com/MohdAkeeb89622" target="_blank"><ImGithub/></a>
         <a href="https://instagram.com/md__akeeb__khan?igshid=YmMyMTA2M2Y=" target="_blank"><ImInstagram/></a>
     </div>
   )
