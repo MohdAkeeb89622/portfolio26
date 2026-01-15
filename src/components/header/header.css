@@ -1,25 +1,30 @@
 header {
     height: 100vh;
-    padding-top: 2rem;
+    padding-top: 1rem;
     overflow: hidden;
 }
 
-.header__container{
+.header__container {
     text-align: center;
     height: 100%;
     position: relative;
 }
 
 /*  ===CTA===  */
-.cta{
-    margin-top: 2.5rem;
+.cta {
+    position: absolute;
+    top: -2rem;
+    left: 0;
+    right: 0;
     display: flex;
-    gap: 1rem;
-    justify-content: center;
+    justify-content: space-between;
+    padding-inline: 1rem;
+    z-index: 10;
+
 }
 
 /*  ===HEADER SOCIALS===  */
-.header__socials{
+.header__socials {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,10 +32,10 @@ header {
     position: absolute;
     left: 0;
     bottom: 3rem;
-    font-size:20px;
+    font-size: 20px;
 }
 
-.header__socials::after{
+.header__socials::after {
     content: '';
     width: 1px;
     height: 2rem;
@@ -61,20 +66,21 @@ header {
 }
 
 /* ====  media queries(medium devices) === */
-@media screen and (max-width:1024px){
-    header{
+@media screen and (max-width:1024px) {
+    header {
         height: 68vh;
 
     }
 }
 
 /* ====  media queries(small devices) === */
-@media screen and (max-width:600px){
+@media screen and (max-width:600px) {
     header {
         height: 100vh;
     }
 
-    .header__socials, .scroll__down{
+    .header__socials,
+    .scroll__down {
         display: none;
     }
 }

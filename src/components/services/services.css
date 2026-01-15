@@ -2,32 +2,66 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    
+
 }
 
 .service {
-    background: var(--color-bg-variant);
+    background: var(--color-primary);
     border-radius: 0 0 2rem 2rem;
     border: 1px solid var(--color-primary);
     transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.service::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg,
+            transparent 0deg 60deg,
+            var(--color-primary-light) 60deg 120deg,
+            transparent 120deg 180deg,
+            var(--color-primary-light) 180deg 240deg,
+            transparent 240deg 300deg,
+            var(--color-primary-light) 300deg 360deg);
+    animation: star-border-rotate 4s linear infinite;
+    z-index: 0;
+}
+
+.service::after {
+    content: '';
+    position: absolute;
+    inset: 0.5px;
+    background: var(--color-primary);
+    border-radius: inherit;
+    z-index: 0;
+}
+
+.service>* {
+    position: relative;
+    z-index: 1;
 }
 
 .service:hover {
     background: transparent;
-    border-color: var(--color-bg-variant);
+    border-color: var(--color-primary);
     cursor: default;
 }
 
 .service__head {
     height: 9rem;
-    background: var(--color-primary);
+    background: var(--color-primary-light);
     padding: 2rem;
     border-radius: 0 0 2rem 2rem;
     box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.1);
 }
 
 .service__head h3 {
-    color: var(--color-bg);
+    color: var(--color-white);
     font-size: 1.2rem;
     text-align: center;
 }
@@ -43,7 +77,7 @@
 }
 
 .service__list-icon {
-    color: var(--color-primary);
+    color: var(--color-white);
     margin-top: 2px;
 }
 
@@ -54,7 +88,7 @@
 }
 
 /* ====  media queries(medium devices) === */
-@media screen and (max-width:1024px){
+@media screen and (max-width:1024px) {
     .services__container {
         grid-template-columns: repeat(1, 1fr);
         gap: 2rem;
@@ -66,7 +100,7 @@
 }
 
 /* ====  media queries(small devices) === */
-@media screen and (max-width:600px){
+@media screen and (max-width:600px) {
     .services__container {
         /* grid-template-columns: 1fr 1fr; */
         gap: 1rem;

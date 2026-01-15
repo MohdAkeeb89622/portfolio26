@@ -2,28 +2,61 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    
+
 }
 
 .portfolio__items {
-    background: var(--color-bg-variant);
+    background: var(--color-primary);
     padding: 1.2rem;
     height: 20rem;
     border-radius: 2rem;
     border: 1px solid transparent;
     transition: var(--transition);
     overflow: hidden;
+    position: relative;
+}
+
+.portfolio__items::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg,
+            transparent 0deg 60deg,
+            var(--color-primary-light) 60deg 120deg,
+            transparent 120deg 180deg,
+            var(--color-primary-light) 180deg 240deg,
+            transparent 240deg 300deg,
+            var(--color-primary-light) 300deg 360deg);
+    animation: star-border-rotate 4s linear infinite;
+    z-index: 0;
+}
+
+.portfolio__items::after {
+    content: '';
+    position: absolute;
+    inset: 0.5px;
+    background: var(--color-primary);
+    border-radius: inherit;
+    z-index: 0;
+}
+
+.portfolio__items>* {
+    position: relative;
+    z-index: 1;
 }
 
 .portfolio__items:hover {
-    border-color: var(--color-bg-variant);
+    border-color: var(--color-primary);
     background: transparent;
 }
 
 
 
 
-.portfolio__item-image{
+.portfolio__item-image {
     border-radius: 1.5rem;
     display: flex;
     height: 60%;
@@ -31,11 +64,11 @@
     cursor: pointer;
     overflow: hidden;
     flex-wrap: nowrap;
-} 
+}
 
 .portfolio__items h3 {
     margin: .5rem 0 1rem;
-    
+
 }
 
 
@@ -47,29 +80,33 @@
 }
 
 /* ====  media queries(medium devices) === */
-@media screen and (max-width:1024px){
+@media screen and (max-width:1024px) {
     .portfolio__container {
         grid-template-columns: 1fr 1fr;
         gap: 1.2rem;
-    } 
+    }
+
     .portfolio__items {
         height: 18rem;
-        
+
     }
+
     .portfolio__item-image {
         height: 52%;
     }
 }
 
 /* ====  media queries(small devices) === */
-@media screen and (max-width:600px){
+@media screen and (max-width:600px) {
     .portfolio__container {
         grid-template-columns: 1fr;
         gap: 1.2rem;
-    } 
-    .portfolio__item{
+    }
+
+    .portfolio__item {
         height: 18rem;
     }
+
     .portfolio__item-image {
         height: 60%;
     }

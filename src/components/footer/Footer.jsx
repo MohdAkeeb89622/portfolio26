@@ -1,8 +1,8 @@
 import React from 'react'
 import './footer.css'
-import { ImFacebook } from 'react-icons/im'
-import { FaInstagram } from 'react-icons/fa'
-import { ImTwitter } from 'react-icons/im'
+import {ImFacebook} from 'react-icons/im'
+import {FaInstagram} from 'react-icons/fa'
+import {ImTwitter} from 'react-icons/im'
 const Footer = () => {
   return (
     <footer>
@@ -17,9 +17,9 @@ const Footer = () => {
       </ul>
 
       <div className="footer__socials">
-        <a href="https://m.facebook.com/100009282089311/" target="_blank" rel="noreferrer"><ImFacebook /></a>
-        <a href="https://instagram.com/md__akeeb__khan?igshid=YmMyMTA2M2Y=" target="_blank" rel="noreferrer"><FaInstagram /></a>
-        <a href=" " target="_blank" rel="noreferrer"><ImTwitter /></a>
+        <a href="https://m.facebook.com/100009282089311/" target="_blank"><ImFacebook/></a>
+        <a href="https://instagram.com/md__akeeb__khan?igshid=YmMyMTA2M2Y=" target="_blank"><FaInstagram/></a>
+        <a href="https://twitter.com/MohdAkeebKhan1?t=b2Yus5UHa7yqtQMDUjkd4Q&s=08" target="_blank"><ImTwitter/></a>
       </div>
 
       <div className="footer__copyright">
@@ -36,10 +36,10 @@ const Footer = () => {
         <div class="rock"></div>
         <div class="truck"></div>
         <div class="wheels"></div>
-      </div>
+      </div> 
     </footer>
-
-
+    
+ 
 
   )
 }

@@ -3,24 +3,59 @@
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 }
-.experience__container > div {
-    background: var(--color-bg-variant);
+
+.experience__container>div {
+    background: var(--color-primary);
     padding: 2.4rem 5rem;
     border-radius: 2rem;
     border: 1px solid transparent;
     transition: var(--transition);
+    position: relative;
+    overflow: hidden;
 }
 
-.experience__container > div:hover {
+.experience__container>div::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg,
+            transparent 0deg 60deg,
+            var(--color-primary-light) 60deg 120deg,
+            transparent 120deg 180deg,
+            var(--color-primary-light) 180deg 240deg,
+            transparent 240deg 300deg,
+            var(--color-primary-light) 300deg 360deg);
+    animation: star-border-rotate 4s linear infinite;
+    z-index: 0;
+}
+
+.experience__container>div::after {
+    content: '';
+    position: absolute;
+    inset: 0.5px;
+    background: var(--color-primary);
+    border-radius: inherit;
+    z-index: 0;
+}
+
+.experience__container>div>* {
+    position: relative;
+    z-index: 1;
+}
+
+.experience__container>div:hover {
     background: transparent;
-    border-color: var(--color-primary-varient);
+    border-color: var(--color-primary);
     cursor: default;
 }
 
-.experience__container > div h3 {
+.experience__container>div h3 {
     text-align: center;
     margin-bottom: 2rem;
-    color: var(--color-primary);
+    color: var(--color-white);
 }
 
 .experience__content {
@@ -36,15 +71,16 @@
 
 .experience__details-icon {
     margin-top: 6px;
-    color: var(--color-primary);
+    color: var(--color-white);
 }
+
 /* ====  media queries(medium devices) === */
-@media screen and (max-width:1024px){
-    .experience__container{
+@media screen and (max-width:1024px) {
+    .experience__container {
         grid-template-columns: 1fr;
     }
 
-    .experience__container > div {
+    .experience__container>div {
         width: var(--container-width-md);
         padding: 2rem;
         margin: auto;
@@ -56,12 +92,12 @@
 }
 
 /* ====  media queries(small devices) === */
-@media screen and (max-width:600px){
+@media screen and (max-width:600px) {
     .experience__container {
         gap: 1rem;
     }
 
-    .experience__container > div {
+    .experience__container>div {
         width: 100%;
         padding: 2rem 1rem;
     }

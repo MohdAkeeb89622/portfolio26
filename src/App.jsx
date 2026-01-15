@@ -9,19 +9,18 @@ import Project from './components/projects/Project';
 import Contact from './components/contact/Contact';
 import Footer from './components/footer/Footer';
 
-import AnimatedProjects from './components/procaps/AnimatedProjects';
 const App = () => {
   return (
     <>
-        <Header/>
-        <Nav />
-        <About/>
-        <Experience/>
-        <AnimatedProjects/>
-        <Project/>
-        <Portfolio/>
-        <Contact/>
-        <Footer/>
+      <Header />
+      <Nav />
+      <About />
+      <Experience />
+      <Services />
+      <Project />
+      <Portfolio />
+      <Contact />
+      <Footer />
 
     </>
   )
