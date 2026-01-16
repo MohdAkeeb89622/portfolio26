@@ -1,32 +1,50 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Frontend dependencies
-/frontend/node_modules
-/frontend/.pnp
-/frontend/.pnp.js
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
 
-/frontend/coverage
-/frontend/build
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
 
-# Backend (Python)
-/backend/.venv
-/backend/__pycache__
-/backend/**/__pycache__
-/backend/*.pyc
-/backend/**/*.pyc
-/backend/.pytest_cache
-/backend/outputs/*.csv
+# Build outputs
+build/
+dist/
+*.egg-info/
 
-# misc
-.DS_Store
+# Testing
+coverage/
+
+# Environment variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# logs
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data and outputs (backend specific)
+backend/outputs/*.csv
