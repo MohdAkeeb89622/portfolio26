@@ -1,0 +1,108 @@
+.services__container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+
+}
+
+.service {
+    background: var(--color-primary);
+    border-radius: 0 0 2rem 2rem;
+    border: 1px solid var(--color-primary);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.service::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg,
+            transparent 0deg 100deg,
+            var(--color-primary-light) 100deg 120deg,
+            transparent 120deg 220deg,
+            var(--color-primary-light) 220deg 240deg,
+            transparent 240deg 340deg,
+            var(--color-primary-light) 340deg 360deg);
+    animation: star-border-rotate 4s linear infinite;
+    z-index: 0;
+}
+
+.service::after {
+    content: '';
+    position: absolute;
+    inset: 0.5px;
+    background: var(--color-primary);
+    border-radius: inherit;
+    z-index: 0;
+}
+
+.service>* {
+    position: relative;
+    z-index: 1;
+}
+
+.service:hover {
+    background: transparent;
+    border-color: var(--color-primary);
+    cursor: default;
+}
+
+.service__head {
+    height: 9rem;
+    background: var(--color-primary-light);
+    padding: 2rem;
+    border-radius: 0 0 2rem 2rem;
+    box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.service__head h3 {
+    color: var(--color-white);
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.service__list {
+    padding: 2rem;
+}
+
+.service__list li {
+    /* display: flex; */
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.service__list-icon {
+    color: var(--color-white);
+    margin-top: 2px;
+}
+
+.service__list p {
+    font-size: 0.9rem;
+    margin-left: 2rem;
+    margin-top: -1.8rem;
+}
+
+/* ====  media queries(medium devices) === */
+@media screen and (max-width:1024px) {
+    .services__container {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
+    }
+
+    .service {
+        height: auto;
+    }
+}
+
+/* ====  media queries(small devices) === */
+@media screen and (max-width:600px) {
+    .services__container {
+        /* grid-template-columns: 1fr 1fr; */
+        gap: 1rem;
+    }
+}

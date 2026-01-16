@@ -1,70 +1,147 @@
-# Getting Started with Create React App
+# Portfolio Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack portfolio website featuring a React frontend and FastAPI backend for stock market anomaly detection.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+```
+portfolio/
+├── frontend/          # React application
+├── backend/           # Python FastAPI application
+└── README.md         # This file
+```
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
+## Frontend Setup (React)
+
+The frontend is a React-based portfolio website.
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm
+
+### Installation
+
+```bash
+cd frontend
+npm install
+```
+
+### Development
+
+Run the development server:
+```bash
+npm start
+```
+
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Production Build
 
-### `npm test`
+Build the app for production:
+```bash
+npm run build
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The build files will be in the `frontend/build/` folder.
 
-### `npm run build`
+### Available Scripts
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds the app for production
+- `npm run eject` - Ejects from Create React App (one-way operation)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Backend Setup (Python FastAPI)
 
-### `npm run eject`
+The backend is a FastAPI application for stock market anomaly detection.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
+- Python 3.8 or higher
+- pip
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Installation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+cd backend
+python -m venv .venv
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Activate virtual environment
+# Windows:
+.venv\Scripts\activate
+# Mac/Linux:
+source .venv/bin/activate
+
+pip install -r requirements.txt
+```
+
+### Development
+
+Run the FastAPI server:
+```bash
+uvicorn api.main:app --reload
+```
+
+The API will be available at:
+- API: [http://localhost:8000](http://localhost:8000)
+- Interactive docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### API Features
+
+- Stock market anomaly detection
+- Date-based query system
+- Monthly reporting
+- Real-time analysis endpoints
+
+For detailed backend documentation, see [backend/README.md](backend/README.md).
+
+---
+
+## Running Both Frontend and Backend
+
+1. **Start Backend** (Terminal 1):
+   ```bash
+   cd backend
+   .venv\Scripts\activate  # Windows
+   uvicorn api.main:app --reload
+   ```
+
+2. **Start Frontend** (Terminal 2):
+   ```bash
+   cd frontend
+   npm start
+   ```
+
+The frontend will communicate with the backend API for data analysis features.
+
+---
+
+## Deployment
+
+### Frontend (Render/Netlify/Vercel)
+
+For Render deployment:
+- **Root Directory**: `frontend`
+- **Build Command**: `npm install && npm run build`
+- **Publish Directory**: `build`
+
+### Backend
+
+The backend can be deployed separately to any Python hosting service.
+
+---
 
 ## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- [Create React App Documentation](https://facebook.github.io/create-react-app/docs/getting-started)
+- [React Documentation](https://reactjs.org/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is private and proprietary.
