@@ -36,14 +36,20 @@ const About = () => {
               <small>10+ Completed [US based]</small>
             </article>
           </div>
-
-          <p>
-            Proficient in translating designs & wireframes into high-quality code, and writing application interface code via Javascript and ReactJS workflows.
-            Adept at monitoring & maintaining frontend performance and troubleshooting & debugging the same to bolster overall performance.
-          </p>
-
-          <a href="#contact" className='btn btn-primary'>Let's talk</a>
         </div>
+      </div>
+
+      <div className="container about__description">
+        <p>
+          Results-oriented professional with 4+ years of experience in software development and technology recruiting, currently transitioning into Data Science and Machine Learning through a certification program (IIT Guwahati & Masai).
+          <br /><br />
+          I work on end-to-end data science problems, including data cleaning, exploratory data analysis (EDA), feature engineering, and building machine learning models with proper validation and evaluation.
+          <br /><br />
+          My experience covers supervised and unsupervised learning techniques such as regression, classification, tree-based and ensemble models, SVM, K-Means, and dimensionality reduction using PCA/LDA. I also have foundational exposure to deep learning architectures including MLP, CNN, and RNN through coursework.
+          <br /><br />
+          I primarily use Python (NumPy, Pandas, Scikit-learn), SQL, and visualization tools to build reproducible analytics workflows. My background as a React/JavaScript developer helps me bring strong product thinking and clarity to data-driven solutions.
+        </p>
+        <a href="#contact" className='btn btn-primary'>Let's talk</a>
       </div>
     </section>
   )

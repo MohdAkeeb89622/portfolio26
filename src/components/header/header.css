@@ -50,9 +50,27 @@ header {
     position: absolute;
     left: calc(50% - 10rem);
     margin-top: 4rem;
-    border-radius: 12rem 12rem 0 0;
+    border-radius: 6rem 6rem 0 0;
     overflow: hidden;
     padding: 3rem 1rem 1rem 1rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.me:hover {
+    transform: rotateY(-10deg) rotateX(5deg) scale(1.05);
+    box-shadow:
+        20px 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(74, 144, 217, 0.3);
+}
+
+.me img {
+    transition: transform 0.4s ease;
+}
+
+.me:hover img {
+    transform: translateZ(20px);
 }
 
 /*  ===SCROLL DOWN===  */

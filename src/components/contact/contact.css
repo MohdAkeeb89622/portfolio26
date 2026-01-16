@@ -30,12 +30,12 @@
     width: 200%;
     height: 200%;
     background: conic-gradient(from 0deg,
-            transparent 0deg 60deg,
-            var(--color-primary-light) 60deg 120deg,
-            transparent 120deg 180deg,
-            var(--color-primary-light) 180deg 240deg,
-            transparent 240deg 300deg,
-            var(--color-primary-light) 300deg 360deg);
+            transparent 0deg 100deg,
+            var(--color-primary-light) 100deg 120deg,
+            transparent 120deg 220deg,
+            var(--color-primary-light) 220deg 240deg,
+            transparent 240deg 340deg,
+            var(--color-primary-light) 340deg 360deg);
     animation: star-border-rotate 4s linear infinite;
     z-index: 0;
 }
