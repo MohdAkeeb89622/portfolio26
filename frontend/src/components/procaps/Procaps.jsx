@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './procaps.css'
-import { FaChartLine, FaPlay, FaGithub, FaTimes } from 'react-icons/fa'
+import { FaChartLine, FaPlay, FaGithub, FaTimes, FaDownload } from 'react-icons/fa'
 import { SiPython, SiFastapi, SiPandas, SiScikitlearn } from 'react-icons/si'
 import { BiLineChart, BiTrendingDown, BiTrendingUp } from 'react-icons/bi'
 
@@ -185,6 +185,16 @@ const Procaps = () => {
                         <div className="procaps__modal-actions">
                             <button className="btn btn-primary procaps__run-btn" onClick={openAnalysisDashboard}>
                                 <FaPlay /> Run Analysis
+                            </button>
+                            <button
+                                className="btn procaps__download-btn"
+                                title="Download combined analysis report"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    window.open('http://localhost:8000/api/report/download', '_blank');
+                                }}
+                            >
+                                <FaDownload /> Download Report
                             </button>
                             <a
                                 href="https://github.com/MohdAkeeb89622"

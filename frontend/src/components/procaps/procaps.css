@@ -445,6 +445,24 @@
     padding: 1rem 1.5rem;
 }
 
+.procaps__download-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #2d8a4e, #51cf66) !important;
+    color: #fff !important;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.procaps__download-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(81, 207, 102, 0.3);
+}
+
 /* ====  media queries(medium devices) === */
 @media screen and (max-width: 1024px) {
     .procaps__stocks-grid {

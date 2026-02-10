@@ -1,20 +1,31 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import './contact.css'
 import { HiOutlineMail } from 'react-icons/hi'
 import { BsWhatsapp } from 'react-icons/bs'
-import { useRef } from 'react';
 import emailjs from 'emailjs-com';
 
 const Contact = () => {
   const form = useRef();
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [sending, setSending] = useState(false);
 
   const sendEmail = (e) => {
     e.preventDefault();
+    setSending(true);
 
     emailjs.sendForm('service_lwwdssh', 'template_feqompj', form.current, '1KnYBKzD3i9An_ch9')
-
-    e.target.reset()
+      .then(() => {
+        setToast({ show: true, message: '✅ Thank you for reaching out! Your message has been sent successfully.', type: 'success' });
+        e.target.reset();
+        setTimeout(() => setToast({ show: false, message: '', type: '' }), 5000);
+      })
+      .catch(() => {
+        setToast({ show: true, message: '❌ Oops! Something went wrong. Please try again later.', type: 'error' });
+        setTimeout(() => setToast({ show: false, message: '', type: '' }), 5000);
+      })
+      .finally(() => setSending(false));
   };
+
   return (
     <section id='contact'>
       <h5>Get In Touch</h5>
@@ -39,9 +50,18 @@ const Contact = () => {
           <input type="text" name='name' placeholder='Your Full Name' required />
           <input type="email" name='email' placeholder='Your Email' required />
           <textarea name="message" rows="7" placeholder='Your Message'></textarea>
-          <button type='submit' className='btn btn-primary'> Send Message</button>
+          <button type='submit' className='btn btn-primary' disabled={sending}>
+            {sending ? 'Sending...' : 'Send Message'}
+          </button>
         </form>
       </div>
+
+      {toast.show && (
+        <div className={`contact__toast contact__toast--${toast.type}`}>
+          <span>{toast.message}</span>
+          <button className="contact__toast-close" onClick={() => setToast({ show: false, message: '', type: '' })}>×</button>
+        </div>
+      )}
     </section>
   )
 }

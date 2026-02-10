@@ -5,7 +5,7 @@ FastAPI backend for analyzing stock market anomalies
 from __future__ import annotations
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse
 from pydantic import BaseModel
 from typing import Optional, List
 import pandas as pd
@@ -30,6 +30,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 # Load data on startup
@@ -59,7 +60,7 @@ class AnomalyResponse(BaseModel):
     ret_z: Optional[float]
     volz: Optional[float]
     range_pct: Optional[float]
-    severity: Optional[float]
+    severity: Optional[float] = None
     why: Optional[str]
     anomaly_flag: int
 
@@ -567,6 +568,232 @@ async def analyze(request: AnalyzeRequest):
         "anomalies_by_type": by_type,
         "sample_anomalies": flagged.head(20).fillna("").to_dict(orient="records")
     }
+
+@app.get("/api/report/download")
+async def download_report():
+    """Download a combined PDF report with all analysis data in table format"""
+    import io
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch, mm
+    from reportlab.platypus import (
+        SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer,
+        PageBreak, HRFlowable
+    )
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    from reportlab.graphics.shapes import Drawing, Rect, String
+    from reportlab.graphics import renderPDF
+
+    try:
+        df_anomaly = pd.read_csv(os.path.join(OUTPUTS_DIR, "daily_anomaly_card.csv"))
+        df_market = pd.read_csv(os.path.join(OUTPUTS_DIR, "market_day_table.csv"))
+        df_features = pd.read_csv(os.path.join(OUTPUTS_DIR, "features_and_flags.csv"))
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=500, detail=f"Data files not found: {e}")
+
+    # Compute stats
+    total_records = len(df_features)
+    anomaly_records = int(df_anomaly["anomaly_flag"].sum()) if "anomaly_flag" in df_anomaly.columns else 0
+    market_anomalies = int(df_market["market_anomaly_flag"].sum()) if "market_anomaly_flag" in df_market.columns else 0
+    tickers = sorted(df_features["ticker"].unique().tolist()) if "ticker" in df_features.columns else []
+    date_min = str(df_features["date"].min()) if "date" in df_features.columns else "N/A"
+    date_max = str(df_features["date"].max()) if "date" in df_features.columns else "N/A"
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buf, pagesize=landscape(A4),
+        leftMargin=15*mm, rightMargin=15*mm,
+        topMargin=15*mm, bottomMargin=15*mm
+    )
+
+    styles = getSampleStyleSheet()
+    # Custom styles
+    title_style = ParagraphStyle('ReportTitle', parent=styles['Title'],
+        fontSize=22, textColor=colors.HexColor("#1a3a5c"), spaceAfter=6, alignment=TA_CENTER)
+    subtitle_style = ParagraphStyle('ReportSub', parent=styles['Normal'],
+        fontSize=10, textColor=colors.HexColor("#666666"), alignment=TA_CENTER, spaceAfter=20)
+    section_style = ParagraphStyle('SectionHead', parent=styles['Heading2'],
+        fontSize=14, textColor=colors.HexColor("#1a3a5c"), spaceBefore=16, spaceAfter=8,
+        borderWidth=1, borderColor=colors.HexColor("#4a90d9"), borderPadding=4)
+    normal_style = ParagraphStyle('NormalText', parent=styles['Normal'],
+        fontSize=9, textColor=colors.HexColor("#333333"), spaceAfter=6)
+
+    elements = []
+
+    # ---- Title ----
+    elements.append(Paragraph("Stock Market Anomaly Detection Report", title_style))
+    elements.append(Paragraph(f"Walk-Forward Analysis  |  {date_min}  to  {date_max}", subtitle_style))
+    elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#4a90d9"), spaceAfter=12))
+
+    # ---- Summary Stats Table ----
+    summary_data = [
+        ["Total Data Points", "Anomalies Detected", "Market Anomaly Days", "Tickers Analyzed"],
+        [f"{total_records:,}", f"{anomaly_records:,}", f"{market_anomalies:,}", str(len(tickers))]
+    ]
+    summary_table = Table(summary_data, colWidths=[160, 160, 160, 160])
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#4a90d9")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 9),
+        ('FONTSIZE', (0, 1), (-1, 1), 16),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica-Bold'),
+        ('TEXTCOLOR', (0, 1), (-1, 1), colors.HexColor("#1a3a5c")),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#ddd")),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor("#f0f6ff")),
+    ]))
+    elements.append(summary_table)
+    elements.append(Spacer(1, 8))
+    elements.append(Paragraph(f"<b>Tickers:</b>  {', '.join(tickers)}", normal_style))
+    elements.append(Spacer(1, 6))
+
+    # ---- Bar charts as tables ----
+    # Anomalies by ticker
+    if "anomaly_flag" in df_anomaly.columns and "ticker" in df_anomaly.columns:
+        flagged = df_anomaly[df_anomaly["anomaly_flag"] == 1]
+        by_ticker = flagged.groupby("ticker").size().sort_values(ascending=False)
+        if len(by_ticker) > 0:
+            elements.append(Paragraph("Anomalies by Ticker", section_style))
+            chart_data = [["Ticker", "Count", "Distribution"]]
+            mx = by_ticker.max()
+            for t, c in by_ticker.items():
+                bar_len = int((c / mx) * 30)
+                bar_str = "\u2588" * bar_len
+                chart_data.append([str(t), str(c), bar_str])
+            chart_table = Table(chart_data, colWidths=[80, 60, 300])
+            chart_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#4a90d9")),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('TEXTCOLOR', (2, 1), (2, -1), colors.HexColor("#4a90d9")),
+                ('FONTNAME', (1, 1), (1, -1), 'Helvetica-Bold'),
+                ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 0.3, colors.HexColor("#ddd")),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8f9fa")]),
+                ('TOPPADDING', (0, 0), (-1, -1), 4),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ]))
+            elements.append(chart_table)
+            elements.append(Spacer(1, 6))
+
+    # Anomalies by type
+    if "type" in df_anomaly.columns:
+        flagged = df_anomaly[df_anomaly["anomaly_flag"] == 1]
+        by_type = flagged["type"].value_counts()
+        if len(by_type) > 0:
+            elements.append(Paragraph("Anomalies by Type", section_style))
+            chart_data = [["Type", "Count", "Distribution"]]
+            mx = by_type.max()
+            for at, c in by_type.items():
+                bar_len = int((c / mx) * 30)
+                bar_str = "\u2588" * bar_len
+                chart_data.append([str(at), str(c), bar_str])
+            chart_table = Table(chart_data, colWidths=[140, 60, 240])
+            chart_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#4a90d9")),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('TEXTCOLOR', (2, 1), (2, -1), colors.HexColor("#2d8a4e")),
+                ('FONTNAME', (1, 1), (1, -1), 'Helvetica-Bold'),
+                ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 0.3, colors.HexColor("#ddd")),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8f9fa")]),
+                ('TOPPADDING', (0, 0), (-1, -1), 4),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ]))
+            elements.append(chart_table)
+
+    # ---- Helper: DataFrame to PDF table ----
+    def df_to_pdf_table(df, title, max_rows=None):
+        elements.append(PageBreak())
+        row_info = f" ({len(df)} rows)" if max_rows is None else f" (showing {min(max_rows, len(df))} of {len(df)} rows)"
+        elements.append(Paragraph(f"{title}{row_info}", section_style))
+        elements.append(Spacer(1, 4))
+
+        if max_rows:
+            df = df.head(max_rows)
+
+        cols = df.columns.tolist()
+        # Header
+        header = [Paragraph(f"<b>{c}</b>", ParagraphStyle('Hdr', fontSize=6, textColor=colors.white, alignment=TA_CENTER)) for c in cols]
+        data = [header]
+
+        for _, row in df.iterrows():
+            row_data = []
+            for c in cols:
+                v = row[c]
+                if pd.isna(v):
+                    row_data.append("—")
+                elif isinstance(v, float):
+                    row_data.append(f"{v:.4f}")
+                else:
+                    row_data.append(str(v))
+            data.append(row_data)
+
+        # Calculate col widths based on number of columns
+        page_w = landscape(A4)[0] - 30*mm
+        col_w = page_w / len(cols)
+        tbl = Table(data, colWidths=[col_w] * len(cols), repeatRows=1)
+        tbl.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#1a3a5c")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 6),
+            ('FONTSIZE', (0, 1), (-1, -1), 6),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('GRID', (0, 0), (-1, -1), 0.3, colors.HexColor("#ccc")),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f5f7fa")]),
+            ('TOPPADDING', (0, 0), (-1, -1), 3),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+            ('LEFTPADDING', (0, 0), (-1, -1), 3),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+        ]))
+        elements.append(tbl)
+
+    # ---- Data Tables ----
+    # 1. Daily anomaly card (flagged only, sorted by severity)
+    df_top = df_anomaly[df_anomaly["anomaly_flag"] == 1].copy()
+    df_top["abs_ret_z"] = df_top["ret_z"].abs()
+    df_top = df_top.sort_values("abs_ret_z", ascending=False).drop(columns=["abs_ret_z"])
+    df_to_pdf_table(df_top, "Daily Anomaly Card (Flagged Anomalies)")
+
+    # 2. Market anomaly days
+    df_market_anom = df_market[df_market["market_anomaly_flag"] == 1].copy() if "market_anomaly_flag" in df_market.columns else df_market.head(0)
+    df_to_pdf_table(df_market_anom, "Market Anomaly Days")
+
+    # 3. Full market day table
+    df_to_pdf_table(df_market, "Full Market Day Table")
+
+    # 4. Features & flags (limit to 500 rows for PDF size)
+    df_to_pdf_table(df_features, "Features & Flags (Complete Dataset)", max_rows=500)
+
+    # ---- Footer on last page ----
+    elements.append(Spacer(1, 20))
+    elements.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#ccc"), spaceAfter=6))
+    footer_style = ParagraphStyle('Footer', fontSize=8, textColor=colors.HexColor("#999"), alignment=TA_CENTER)
+    elements.append(Paragraph("Stock Market Anomaly Detection Report — Mohd Akeeb Khan", footer_style))
+
+    doc.build(elements)
+
+    import tempfile, shutil
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    buf.seek(0)
+    shutil.copyfileobj(buf, tmp)
+    tmp.close()
+
+    return FileResponse(
+        path=tmp.name,
+        filename="Stock_Market_Anomaly_Report.pdf",
+        media_type="application/octet-stream",
+    )
 
 if __name__ == "__main__":
     import uvicorn
