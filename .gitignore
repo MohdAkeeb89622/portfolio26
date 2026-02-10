@@ -48,3 +48,4 @@ Thumbs.db
 
 # Data and outputs (backend specific)
 backend/outputs/*.csv
+backend/data/raw/
