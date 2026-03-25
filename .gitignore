@@ -46,6 +46,6 @@ Thumbs.db
 *.swo
 *~
 
-# Data and outputs (backend specific)
-backend/outputs/*.csv
+# Data (backend specific - raw data not tracked)
 backend/data/raw/
+# Note: backend/outputs/*.csv is tracked so data deploys with the app

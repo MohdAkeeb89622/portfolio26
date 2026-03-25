@@ -3,6 +3,7 @@ import './procaps.css'
 import { FaChartLine, FaPlay, FaGithub, FaTimes, FaDownload } from 'react-icons/fa'
 import { SiPython, SiFastapi, SiPandas, SiScikitlearn } from 'react-icons/si'
 import { BiLineChart, BiTrendingDown, BiTrendingUp } from 'react-icons/bi'
+import { API_BASE_URL } from '../../api'
 
 // Stock and ETF data from the project
 const stocksAndETFs = [
@@ -35,7 +36,7 @@ const Procaps = () => {
         const top = (window.screen.height - height) / 2;
 
         window.open(
-            'http://localhost:8000',
+            API_BASE_URL,
             'Stock Market Anomaly Analysis',
             `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
         );
@@ -191,13 +192,13 @@ const Procaps = () => {
                                 title="Download combined analysis report"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    window.open('http://localhost:8000/api/report/download', '_blank');
+                                    window.open(`${API_BASE_URL}/api/report/download`, '_blank');
                                 }}
                             >
                                 <FaDownload /> Download Report
                             </button>
                             <a
-                                href="https://github.com/MohdAkeeb89622"
+                                href="https://github.com/MohdAkeeb89622/DATA-SCIENCE-CAPSTONE-PROJECT.git"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn procaps__github-btn"
