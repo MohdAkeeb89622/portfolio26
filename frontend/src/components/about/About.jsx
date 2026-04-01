@@ -18,8 +18,8 @@ const About = () => {
         <div className="about__content">
           <p className="about__text">
             I'm <span className="about__accent">Mohd Akeeb Khan</span>, a results-driven professional 
-            with <span className="about__accent">4+ years of experience</span> in software development 
-            and technology recruiting, now transitioning into <span className="about__accent">Data Science 
+            with <span className="about__accent">4+ years of experience</span> in software development, 
+            now transitioning into <span className="about__accent">Data Science 
             and Machine Learning</span> through advanced training 
             with <span className="about__accent">IIT Guwahati</span> and <span className="about__accent">Masai</span>.
           </p>
