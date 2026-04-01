@@ -1,9 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap');
+
 .about__container {
     display: grid;
-    grid-template-columns: 35% 50%;
-    gap: 15%;
+    grid-template-columns: 35% 55%;
+    gap: 10%;
+    align-items: start;
 }
 
+/* ====== PROFILE IMAGE ====== */
 .about__me {
     width: 100%;
     aspect-ratio: 1/1;
@@ -11,6 +15,8 @@
     background: linear-gradient(45deg, transparent, var(--color-light), transparent);
     display: grid;
     place-items: center;
+    position: sticky;
+    top: 4rem;
 }
 
 .about__me-image {
@@ -24,88 +30,81 @@
     transform: rotate(0);
 }
 
-.about__cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+/* ====== PARAGRAPH CONTENT ====== */
+.about__content {
+    padding-top: 0.5rem;
 }
 
-.about__card {
-    background: var(--color-primary);
-    border: 1px solid transparent;
-    border-radius: 1rem;
-    padding: 2rem;
-    text-align: center;
-    transition: var(--transition);
-    margin-bottom: 1rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.about__card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg,
-            transparent 0deg 100deg,
-            var(--color-primary-light) 100deg 120deg,
-            transparent 120deg 220deg,
-            var(--color-primary-light) 220deg 240deg,
-            transparent 240deg 340deg,
-            var(--color-primary-light) 340deg 360deg);
-    animation: star-border-rotate 4s linear infinite;
-    z-index: 0;
-}
-
-.about__card::after {
-    content: '';
-    position: absolute;
-    inset: 0.5px;
-    background: var(--color-primary);
-    border-radius: inherit;
-    z-index: 0;
-}
-
-.about__card>* {
-    position: relative;
-    z-index: 1;
-}
-
-.about__card:hover {
-    background: transparent;
-    border-color: var(--color-primary);
-    cursor: default;
-}
-
-.about__icon {
-    color: var(--color-white);
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-}
-
-.about__card h5 {
+.about__text {
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
-    color: var(--color-white);
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.9;
+    margin-bottom: 1.4rem;
+    letter-spacing: 0.015em;
 }
 
-.about__card small {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.8);
+.about__text:first-of-type::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    font-weight: 600;
+    float: left;
+    line-height: 1;
+    margin-right: 0.5rem;
+    margin-top: 0.15rem;
+    color: #38bdf8;
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
 }
 
-.about__description {
-    margin-top: 2rem;
-    text-align: center;
+.about__accent {
+    color: #38bdf8;
+    font-weight: 500;
 }
 
-.about__description p {
-    margin: 2rem 0 2.6rem;
-    color: var(--color-light);
-    text-align: justify;
-    line-height: 1.8;
+/* ====== SKILL TAGS ====== */
+.about__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+.about__tag {
+    padding: 0.45rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+}
+
+.about__tag:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.06);
+    transform: translateY(-2px);
+}
+
+/* ====== CTA ====== */
+.about__cta {
+    display: inline-block;
+}
+
+/* ====== DECORATIVE LINE ====== */
+.about__content::before {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #38bdf8, transparent);
+    border-radius: 3px;
+    margin-bottom: 1.6rem;
 }
 
 /* ====  media queries(medium devices) === */
@@ -118,10 +117,25 @@
     .about__me {
         width: 50%;
         margin: 2rem auto 4rem;
+        position: static;
     }
 
-    .about__content p {
-        margin: 1rem 0 1.5rem;
+    .about__content {
+        text-align: left;
+    }
+
+    .about__content::before {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .about__tags {
+        justify-content: center;
+    }
+
+    .about__cta {
+        display: block;
+        text-align: center;
     }
 }
 
@@ -132,16 +146,17 @@
         margin: 0 auto 3rem;
     }
 
-    .about__cards {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+    .about__text {
+        font-size: 0.88rem;
+        line-height: 1.85;
+        text-align: left;
     }
 
-    .about__content {
-        text-align: center;
+    .about__text:first-of-type::first-letter {
+        font-size: 2.6rem;
     }
 
-    .about__content p {
-        margin: 1.5rem 0;
+    .about__tags {
+        justify-content: flex-start;
     }
 }
